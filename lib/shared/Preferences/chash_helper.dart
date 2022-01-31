@@ -35,4 +35,8 @@ class CacheHelper {
   static double? getDouble({required String key}) {
     return sharedPrefer!.getDouble(key);
   }
+
+  static void removeKey(String key) {
+    sharedPrefer!.remove(key);
+  }
 }

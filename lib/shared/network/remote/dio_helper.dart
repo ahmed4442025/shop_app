@@ -9,6 +9,7 @@ class DioHelper {
       baseUrl: 'https://student.valuxapps.com/api/',
       headers: {'lang': 'ar', 'Content-Type': 'application/json'},
     ));
+
   }
 
   static Map<String, dynamic> _setHeaders({String lang = 'ar', String? token}) {
@@ -22,10 +23,10 @@ class DioHelper {
   }
 
   // get request
-  static Future<Response> getData(String url, Map<String, dynamic> query,
-      {String lang = 'ar', String? token}) async {
+  static Future<Response> getData(String url,
+      {Map<String, dynamic>? query, String lang = 'ar', String? token}) async {
     dio.options.headers = _setHeaders(lang: lang, token: token);
-    return await dio.get(url, queryParameters: query);
+    return await dio.get(url, queryParameters: query??{});
   }
 
   // post request

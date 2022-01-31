@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shop_app/models_scr/login/cubit/login_cubit.dart';
-import 'package:shop_app/models_scr/login/cubit/login_states.dart';
+import 'package:shop_app/layouts/home/home_layout.dart';
+import 'package:shop_app/shared/cubits/cubit_login/login_cubit.dart';
+import 'package:shop_app/shared/cubits/cubit_login/login_states.dart';
 import 'package:shop_app/shared/network/strings/test_values.dart';
 import 'package:shop_app/shared/other/components.dart';
+import 'package:shop_app/shared/other/help_methods.dart';
 
 class LoginScr extends StatelessWidget {
   LoginScr({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LoginCubit(),
-      child: BlocConsumer<LoginCubit, LoginStates>(
-        listener: (BuildContext context, state) {
-          loginStates(state);
-        },
-        builder: (BuildContext context, state) {
-          cont = context;
-          LoginCubit cubit = LoginCubit.get(context);
-          return myScaffold(context, cubit, state);
-        },
-      ),
+    return BlocConsumer<LoginCubit, LoginStates>(
+      listener: (BuildContext context, state) {
+        loginStates(state);
+      },
+      builder: (BuildContext context, state) {
+        myContext = context;
+        LoginCubit cubit = LoginCubit.get(context);
+        email.text = cubit.getLastEmail();
+        // password.text = TestValues.loginPass;
+        return myScaffold(context, cubit, state);
+      },
     );
   }
 
@@ -31,7 +32,7 @@ class LoginScr extends StatelessWidget {
   bool izPassdShow = false;
   IconData passIcon = Icons.star;
   var formKey = GlobalKey<FormState>();
-  late BuildContext cont ;
+  late BuildContext myContext ;
 
   Scaffold myScaffold(BuildContext context, LoginCubit cubit, state) =>
       Scaffold(
@@ -122,6 +123,7 @@ class LoginScr extends StatelessWidget {
     if (state is LoginSuccessState) {
       if (state.loginmodel.status ?? false) {
         Components.showToast(state.loginmodel.message ?? '', clr: Colors.green);
+        HelpMethods.openScrNoBack(myContext, HomeLayout());
       } else {
         Components.showToast(state.loginmodel.message ?? '', clr: Colors.red);
       }

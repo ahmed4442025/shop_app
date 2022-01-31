@@ -23,7 +23,13 @@ class MyThemes {
       ));
 
   static ThemeData themeLight() => ThemeData(
-      primarySwatch: Colors.blue,
-      scaffoldBackgroundColor: Colors.white,
-      appBarTheme: MyThemes.appBarThemeNoClr());
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: MyThemes.appBarThemeNoClr(),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          type: BottomNavigationBarType.fixed,
+            unselectedItemColor: Colors.grey,
+            selectedItemColor: Colors.blue,
+        ),
+      );
 }

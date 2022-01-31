@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/shared/cubits/cubit_login/login_cubit.dart';
+import 'package:shop_app/shared/cubits/cubit_login/login_states.dart';
 import 'package:shop_app/shared/other/components.dart';
-import 'package:shop_app/shared/cubits/app_cubit.dart';
-import 'package:shop_app/shared/cubits/app_states.dart';
 import 'package:shop_app/shared/setting/vars.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -11,29 +11,30 @@ class IntroHomeLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppCubit, AppStates>(
+    return BlocConsumer<LoginCubit, LoginStates>(
       listener: (BuildContext context, state) {},
       builder: (BuildContext context, state) {
-        AppCubit cubit = AppCubit.get(context);
-        return myScaffold(context, cubit);
+        cubit = LoginCubit.get(context);
+        return myScaffold(context);
       },
     );
   }
 
   // vars
+  late LoginCubit cubit;
   List<bordingModel> bords = [
     bordingModel('${Vars.imagesPath}/logo/logo.png', 'title 1', 'body 1'),
     bordingModel('${Vars.imagesPath}/logo/gaming.png', 'title 2', 'body 2'),
     bordingModel('${Vars.imagesPath}/logo/tiger.png', 'title 3', 'body 3'),
   ];
 
-  Scaffold myScaffold(BuildContext context, AppCubit cubit) => Scaffold(
-        appBar: myAppBar(context, cubit),
-        body: mainContainer(context, cubit),
+  Scaffold myScaffold(BuildContext context) => Scaffold(
+        appBar: myAppBar(context),
+        body: mainContainer(context),
         // floatingActionButton: fltb(cubit),
       );
 
-  AppBar myAppBar(context, AppCubit cubit) => AppBar(
+  AppBar myAppBar(context) => AppBar(
         title: const Text('titlse'),
         actions: [
           TextButton(
@@ -42,31 +43,31 @@ class IntroHomeLayout extends StatelessWidget {
         ],
       );
 
-  FloatingActionButton fltb(AppCubit cubit) => FloatingActionButton(
+  FloatingActionButton fltb() => FloatingActionButton(
         onPressed: () {
-          cubit.changeIsDark();
+
         },
         child: const Icon(Icons.dark_mode),
       );
 
   // my container
-  Widget mainContainer(BuildContext context, AppCubit cubit) => Container(
+  Widget mainContainer(BuildContext context) => Container(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Expanded(child: pageViewer(context, cubit)),
-              forwardButton(context, cubit)
+              Expanded(child: pageViewer(context)),
+              forwardButton(context)
             ],
           ),
         ),
       );
 
   // page viewer
-  Widget pageViewer(BuildContext context, AppCubit cubit) => PageView.builder(
-        controller: cubit.pageConroller,
+  Widget pageViewer(BuildContext context) => PageView.builder(
+        controller: cubit.pageIntroConrol,
         physics: const BouncingScrollPhysics(),
-        itemBuilder: (context, index) => oneCard(cubit, bords[index]),
+        itemBuilder: (context, index) => oneCard(bords[index]),
         itemCount: bords.length,
         onPageChanged: (index) {
           cubit.isThislast(index, bords.length, context);
@@ -74,9 +75,9 @@ class IntroHomeLayout extends StatelessWidget {
       );
 
   // button next page
-  Widget forwardButton(BuildContext context, AppCubit cubit) => Row(children: [
+  Widget forwardButton(BuildContext context) => Row(children: [
         SmoothPageIndicator(
-          controller: cubit.pageConroller,
+          controller: cubit.pageIntroConrol,
           count: bords.length,
           effect: ExpandingDotsEffect(spacing: 10, activeDotColor: Vars.pryClr,),
         ),
@@ -87,7 +88,7 @@ class IntroHomeLayout extends StatelessWidget {
         )
       ]);
 
-  Widget oneCard(AppCubit cubit, bordingModel model) => Column(
+  Widget oneCard( bordingModel model) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Expanded(
