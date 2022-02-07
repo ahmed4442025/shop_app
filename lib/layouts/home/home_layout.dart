@@ -27,8 +27,8 @@ class HomeLayout extends StatelessWidget {
   late AppCubit cubit;
   List<Widget> scrs = [
     ProductsScr(),
-    FavoritesScr(),
     CategoriesScr(),
+    FavoritesScr(),
     SettingsScr()
   ];
 

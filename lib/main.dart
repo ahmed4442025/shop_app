@@ -15,6 +15,7 @@ import 'package:shop_app/shared/cubits/block_observer.dart';
 import 'package:shop_app/shared/setting/vars.dart';
 import 'package:shop_app/shared/styles/thems.dart';
 import 'package:shop_app/temp_delete_it_if_u_want/tempHomePage.dart';
+import 'package:shop_app/temp_delete_it_if_u_want/test_speach.dart';
 
 void main() async {
   BlocOverrides.runZoned(
@@ -34,8 +35,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (BuildContext context) => AppCubit()..init(context)),
-        BlocProvider(create: (BuildContext context) => LoginCubit()),
+        BlocProvider(create: (BuildContext context) => AppCubit()..init()),
+        BlocProvider(create: (BuildContext context) => LoginCubit()..init(context)),
       ],
       child: BlocConsumer<AppCubit, AppStates>(
         listener: (BuildContext context, state) {},
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
             themeMode: cubit.isDark ? ThemeMode.dark : ThemeMode.light,
             // ******** I'M HERE **********
             home: checkHomeScr(cubit),
-            // home: TempHome(),
+            // home: AudioRecognize(),
           );
         },
       ),

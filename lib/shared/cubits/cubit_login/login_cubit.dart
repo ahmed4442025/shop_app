@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/models/login/login_model.dart';
+import 'package:shop_app/models/logout_model.dart';
 import 'package:shop_app/models_scr/login/login/login_scr.dart';
 import 'package:shop_app/shared/Preferences/chash_helper.dart';
 import 'package:shop_app/shared/Preferences/preferences_names.dart';
+import 'package:shop_app/shared/cubits/main_cubit/app_cubit.dart';
 import 'package:shop_app/shared/network/strings/end_points.dart';
 import 'package:shop_app/shared/network/remote/dio_helper.dart';
+import 'package:shop_app/shared/other/components.dart';
 import 'package:shop_app/shared/other/help_methods.dart';
 import 'package:shop_app/shared/other/show_hide_pass.dart';
 
@@ -17,6 +20,12 @@ class LoginCubit extends Cubit<LoginStates> {
   static LoginCubit get(context) {
     return BlocProvider.of(context);
   }
+
+  void init(context) {
+    cubit = AppCubit.get(context);
+  }
+
+  late AppCubit cubit;
 
   // ===========  intro page  ================
   // intro page vars
@@ -47,15 +56,23 @@ class LoginCubit extends Cubit<LoginStates> {
   }
 
   void logOut(context) {
-    CacheHelper.removeKey(PrefrKeys.token);
-    HelpMethods.openScrNoBack(context, LoginScr());
+    DioHelper.postData(EndPoint.logout, {}, token: cubit.token).then((value) {
+      LogOutModel model = LogOutModel.fromJson(value!.data);
+      if (model.status ?? false) {
+        CacheHelper.removeKey(PrefrKeys.token);
+        cubit.token = '';
+        HelpMethods.openScrNoBack(context, LoginScr());
+      } else {
+        Components.showToast(model.message.toString(), clr: Colors.red);
+      }
+    }).catchError((e) {
+      Components.showToast(e.toString() , clr: Colors.red);
+    });
   }
 
   // ===========  login page  ================
   //vars
   ShowHidePass izPass = ShowHidePass();
-
-  static void init() {}
 
   void saveLastEmail(String email) {
     CacheHelper.setValue(key: PrefrKeys.lastEmail, value: email);
@@ -65,15 +82,18 @@ class LoginCubit extends Cubit<LoginStates> {
     return CacheHelper.getString(key: PrefrKeys.lastEmail) ?? '';
   }
 
-  void login(String email, String pass, {bool savaEmail = true}) async {
+  void login(String email, String pass, BuildContext context,
+      {bool savaEmail = true}) async {
     emit(LoginLoadingState());
     var data = {'email': email, 'password': pass};
-    if(savaEmail){
+    if (savaEmail) {
       saveLastEmail(email);
     }
     DioHelper.postData(EndPoint.login, data).then((value) {
       LoginModel model = LoginModel.fromJson(value!.data);
       CacheHelper.setValue(key: PrefrKeys.token, value: model.data!.token);
+      cubit.token = model.data!.token ?? '';
+      cubit.initDefult();
       emit(LoginSuccessState(model));
     }).catchError((error) {
       print(error.toString());

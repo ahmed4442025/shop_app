@@ -95,4 +95,6 @@ class Components {
         fontSize: 16.0
     );
   }
+
+  static Widget loading() => Components.simpleText(txt: 'loading', size: 50);
 }

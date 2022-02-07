@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/models_scr/compon_priv.dart';
 import 'package:shop_app/shared/cubits/cubit_login/login_cubit.dart';
 import 'package:shop_app/shared/cubits/main_cubit/app_cubit.dart';
 import 'package:shop_app/shared/cubits/main_cubit/app_states.dart';
+import 'package:shop_app/shared/other/components.dart';
 
 class SettingsScr extends StatelessWidget {
   SettingsScr({Key? key}) : super(key: key);
@@ -15,6 +17,8 @@ class SettingsScr extends StatelessWidget {
         myContext = context;
         cubit = AppCubit.get(context);
         cubitLogin = LoginCubit.get(context);
+        comp = ComponPrivt(cubit);
+        fillFields();
         return myScaffold();
       },
     );
@@ -22,21 +26,58 @@ class SettingsScr extends StatelessWidget {
 
   //vars
   late BuildContext myContext;
-
   late AppCubit cubit;
   late LoginCubit cubitLogin;
+   late ComponPrivt comp ;
+
+  // Text field
+  TextEditingController name = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController phone = TextEditingController();
 
   Scaffold myScaffold() => Scaffold(
         appBar: AppBar(
           title: const Text('SettingsScr'),
         ),
-        body: mainContainer(),
+        body: comp.showLoading(cubit.profile != null, mainContainer(),)
       );
 
-  Widget mainContainer() => Container(
-        child: TextButton(
-          onPressed: ()=>cubitLogin.logOut(myContext),
-          child: const Text('LOG OUT'),
+  Widget mainContainer() => Form(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              Components.simpleTextField(
+                  controler: name, lableTxt: 'name', prefixIcon: Icons.person),
+              const SizedBox(
+                height: 20,
+              ),
+              Components.simpleTextField(
+                  controler: email, lableTxt: 'email', prefixIcon: Icons.email),
+              const SizedBox(
+                height: 20,
+              ),
+              Components.simpleTextField(
+                  controler: phone, lableTxt: 'phone', prefixIcon: Icons.phone),
+              const SizedBox(
+                height: 20,
+              ),
+              logOut(),
+            ],
+          ),
         ),
       );
+
+  Widget logOut() => TextButton(
+        onPressed: () => cubitLogin.logOut(myContext),
+        child: const Text('LOG OUT'),
+      );
+
+  void fillFields() {
+    if (cubit.profile != null) {
+      email.text = cubit.profile!.data!.email ?? '';
+      name.text = cubit.profile!.data!.name ?? '';
+      phone.text = cubit.profile!.data!.phone ?? '';
+    }
+  }
 }

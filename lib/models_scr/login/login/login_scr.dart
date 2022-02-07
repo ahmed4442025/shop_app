@@ -115,7 +115,7 @@ class LoginScr extends StatelessWidget {
   void login(LoginCubit cubit) {
     if (formKey.currentState!.validate()) {
       // cubit.login(TestValues.loginEmail, TestValues.loginPass),
-      cubit.login(email.text, password.text);
+      cubit.login(email.text, password.text, myContext);
     }
   }
 
