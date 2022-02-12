@@ -5,6 +5,7 @@ import 'package:shop_app/layouts/intro/Intro_home_layout.dart';
 import 'package:shop_app/layouts/home/home_layout.dart';
 import 'package:shop_app/models_scr/favorits/favorits_scr.dart';
 import 'package:shop_app/models_scr/login/login/login_scr.dart';
+import 'package:shop_app/models_scr/login/register/register_scr.dart';
 import 'package:shop_app/shared/Preferences/preferences_names.dart';
 import 'package:shop_app/shared/cubits/cubit_login/login_cubit.dart';
 import 'package:shop_app/shared/cubits/main_cubit/app_states.dart';
@@ -15,7 +16,6 @@ import 'package:shop_app/shared/cubits/block_observer.dart';
 import 'package:shop_app/shared/setting/vars.dart';
 import 'package:shop_app/shared/styles/thems.dart';
 import 'package:shop_app/temp_delete_it_if_u_want/tempHomePage.dart';
-import 'package:shop_app/temp_delete_it_if_u_want/test_speach.dart';
 
 void main() async {
   BlocOverrides.runZoned(
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
             themeMode: cubit.isDark ? ThemeMode.dark : ThemeMode.light,
             // ******** I'M HERE **********
             home: checkHomeScr(cubit),
-            // home: AudioRecognize(),
+            // home: TempHome(),
           );
         },
       ),

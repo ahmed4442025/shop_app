@@ -101,9 +101,9 @@ class IntroHomeLayout extends StatelessWidget {
         ),
       ),
       Components.box(h: 20),
-      Components.simpleText(txt: model.title, size: 30),
+      Components.simpleText(model.title, size: 30),
       Components.box(h: 40),
-      Components.simpleText(txt: model.body, size: 20),
+      Components.simpleText(model.body, size: 20),
       Components.box(h: 40)
     ],
   );

@@ -20,20 +20,25 @@ class AppCubit extends Cubit<AppStates> {
 
   static AppCubit get(context) => BlocProvider.of(context);
 
-  void init() {
+  Future<bool> init() async{
     _getLocalLang();
-    getHomeHttp();
-    getCatHttp();
-    getFavoritesHttp();
-    getSittingsHttp();
+    if(token != ''){
+      getHomeHttp();
+      getCatHttp();
+      getFavoritesHttp();
+      await getSittingsHttp();
+    }
+    return true;
+
   }
-  void initDefult(){
+  Future<bool> initDefult() async{
     homeModel = null;
     catModel = null;
     favorites = null;
     profile = null;
     izFav = {};
-    init();
+    await init();
+    return true;
   }
 
   // Preferences vars
@@ -80,7 +85,7 @@ class AppCubit extends Cubit<AppStates> {
   ProfileModel? profile ;
   Map<int, bool> izFav = {};
 
-  void getHomeHttp() async {
+  Future<int> getHomeHttp() async {
     emit(AppLoadingHttpHomeState());
     await DioHelper.getData(EndPoint.home, token: token, lang: lang ?? 'ar')
         .then((value) {
@@ -90,6 +95,7 @@ class AppCubit extends Cubit<AppStates> {
       }
       emit(AppSuccessHttpHomeState());
     });
+    return 0;
   }
 
   void getCatHttp() async {
@@ -134,12 +140,14 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-  void getSittingsHttp() async {
+  Future<bool> getSittingsHttp() async {
     await DioHelper.getData(EndPoint.profile, token: token).then((value) {
       profile = ProfileModel.fromJson(value.data);
       emit(AppSuccessHttpFavGetState());
     });
+    return true;
   }
+
 
 
   // ==========  TEST LOCAL  ============

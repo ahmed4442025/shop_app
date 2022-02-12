@@ -66,17 +66,17 @@ class Components {
           ),
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(borderR),
           color: clr,
         ),
       );
 
   // simple Text
-  static simpleText({txt = 'Text', double size = 20, bool bold = false}) =>
+  static simpleText(txt,{ double size = 20, bool bold = false, Color? color}) =>
       Text(
         txt,
         style: TextStyle(
-            fontSize: size, fontWeight: bold ? FontWeight.bold : null),
+            fontSize: size, fontWeight: bold ? FontWeight.bold : null, color: color),
       );
 
   static SizedBox box({double h = 20, double w = 20}) => SizedBox(
@@ -96,5 +96,5 @@ class Components {
     );
   }
 
-  static Widget loading() => Components.simpleText(txt: 'loading', size: 50);
+  static Widget loading() => Components.simpleText('loading', size: 50);
 }

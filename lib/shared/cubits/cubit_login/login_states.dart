@@ -21,3 +21,19 @@ class LoginErrorState extends LoginStates {
 }
 
 class LoginChangePassIcoState extends LoginStates {}
+
+class LoginLoadingRegisterState extends LoginStates {}
+
+class LoginSuccessRegisterState extends LoginStates {}
+
+class LoginFaildRegisterState extends LoginStates {}
+
+class LoginErrorRegisterState extends LoginStates {}
+
+class LoginLoadingUpdateUserState extends LoginStates {}
+
+class LoginSuccessUpdateUserState extends LoginStates {}
+
+class LoginFaildUpdateUserState extends LoginStates {}
+
+class LoginErrorUpdateUserState extends LoginStates {}

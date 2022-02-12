@@ -1,11 +1,11 @@
-class ProfileModel {
+class RegisterRespModel {
   bool? status;
   String? message;
   Data? data;
 
-  ProfileModel({this.status, this.message, this.data});
+  RegisterRespModel({this.status, this.message, this.data});
 
-  ProfileModel.fromJson(Map<String, dynamic> json) {
+  RegisterRespModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
@@ -23,45 +23,31 @@ class ProfileModel {
 }
 
 class Data {
-  int? id;
   String? name;
-  String? email;
   String? phone;
+  String? email;
+  int? id;
   String? image;
-  int? points;
-  int? credit;
   String? token;
 
-  Data(
-      {this.id,
-        this.name,
-        this.email,
-        this.phone,
-        this.image,
-        this.points,
-        this.credit,
-        this.token});
+  Data({this.name, this.phone, this.email, this.id, this.image, this.token});
 
   Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
     name = json['name'];
-    email = json['email'];
     phone = json['phone'];
+    email = json['email'];
+    id = json['id'];
     image = json['image'];
-    points = json['points'];
-    credit = json['credit'];
     token = json['token'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
     data['name'] = this.name;
-    data['email'] = this.email;
     data['phone'] = this.phone;
+    data['email'] = this.email;
+    data['id'] = this.id;
     data['image'] = this.image;
-    data['points'] = this.points;
-    data['credit'] = this.credit;
     data['token'] = this.token;
     return data;
   }

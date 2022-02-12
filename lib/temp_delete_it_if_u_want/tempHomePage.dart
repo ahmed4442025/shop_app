@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/models/home/home_model.dart';
@@ -32,7 +33,7 @@ class TempHome extends StatelessWidget {
           child: Text('New App !'),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: testVoid1(),
+          onPressed: run(),
           child: const Icon(Icons.dark_mode),
         ),
       );
@@ -49,4 +50,22 @@ class TempHome extends StatelessWidget {
         print('from test scr');
         cubit.getHomeLocalTest(myContext);
       };
+
+  VoidCallback run() => () async {
+        runAll().then((value) => print('run all $value'));
+      };
+
+  Future<bool> runAll() async {
+    testSleep(s: 5);
+    testSleep(s: 5);
+    await testSleep(s: 1);
+    return true;
+  }
+
+  Future<bool> testSleep({int s = 2}) async {
+    print('start');
+    await Future.delayed(Duration(seconds: s), () {});
+    print('end : $s');
+    return true;
+  }
 }

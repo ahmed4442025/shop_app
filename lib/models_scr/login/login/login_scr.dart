@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/layouts/home/home_layout.dart';
+import 'package:shop_app/models_scr/login/register/register_scr.dart';
 import 'package:shop_app/shared/cubits/cubit_login/login_cubit.dart';
 import 'package:shop_app/shared/cubits/cubit_login/login_states.dart';
 import 'package:shop_app/shared/network/strings/test_values.dart';
@@ -20,7 +21,6 @@ class LoginScr extends StatelessWidget {
         myContext = context;
         LoginCubit cubit = LoginCubit.get(context);
         email.text = cubit.getLastEmail();
-        // password.text = TestValues.loginPass;
         return myScaffold(context, cubit, state);
       },
     );
@@ -29,10 +29,8 @@ class LoginScr extends StatelessWidget {
   // vars
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-  bool izPassdShow = false;
-  IconData passIcon = Icons.star;
   var formKey = GlobalKey<FormState>();
-  late BuildContext myContext ;
+  late BuildContext myContext;
 
   Scaffold myScaffold(BuildContext context, LoginCubit cubit, state) =>
       Scaffold(
@@ -77,9 +75,9 @@ class LoginScr extends StatelessWidget {
                 Components.simpleTextField(
                     controler: password,
                     prefixIcon: Icons.lock,
-                    password: cubit.izPass.izPass,
-                    passwordIcon: cubit.izPass.icon,
-                    onPasswordIconPressed: cubit.changePassShow(),
+                    password: cubit.izPassLoginScr.izPass,
+                    passwordIcon: cubit.izPassLoginScr.icon,
+                    onPasswordIconPressed: cubit.changePassLoginShow(),
                     textInputAction: TextInputAction.done,
                     onsubmitted: (s) => login(cubit)),
                 const SizedBox(
@@ -93,7 +91,10 @@ class LoginScr extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Don\'t have an account ?  '),
-                    TextButton(onPressed: () {}, child: const Text('REGISTER'))
+                    TextButton(
+                        onPressed: () =>
+                            HelpMethods.openScr(context, RegisterScr()),
+                        child: const Text('REGISTER'))
                   ],
                 )
               ],
@@ -129,6 +130,4 @@ class LoginScr extends StatelessWidget {
       }
     }
   }
-
-
 }

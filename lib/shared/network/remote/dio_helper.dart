@@ -38,4 +38,11 @@ class DioHelper {
 
     return await dio.post(url, data: data, queryParameters: query);
   }
+  // put request
+  static Future<Response?> putData(String url, Map<String, dynamic> data,
+      {Map<String, dynamic>? query, String? lang, String? token}) async {
+    dio.options.headers = _setHeaders(lang: lang, token: token);
+
+    return await dio.put(url, data: data, queryParameters: query);
+  }
 }

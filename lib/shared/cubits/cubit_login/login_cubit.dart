@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/layouts/home/home_layout.dart';
 import 'package:shop_app/models/login/login_model.dart';
 import 'package:shop_app/models/logout_model.dart';
+import 'package:shop_app/models/profile_model.dart';
+import 'package:shop_app/models/register_fields.dart';
+import 'package:shop_app/models/register_res_model.dart';
 import 'package:shop_app/models_scr/login/login/login_scr.dart';
 import 'package:shop_app/shared/Preferences/chash_helper.dart';
 import 'package:shop_app/shared/Preferences/preferences_names.dart';
@@ -32,7 +36,8 @@ class LoginCubit extends Cubit<LoginStates> {
   PageController pageIntroConrol = PageController();
   bool isLastIntro = false;
 
-  VoidCallback nextPageControl(BuildContext context) => () {
+  VoidCallback nextPageControl(BuildContext context) =>
+          () {
         if (isLastIntro) {
           skipIntro(context);
         } else {
@@ -66,13 +71,14 @@ class LoginCubit extends Cubit<LoginStates> {
         Components.showToast(model.message.toString(), clr: Colors.red);
       }
     }).catchError((e) {
-      Components.showToast(e.toString() , clr: Colors.red);
+      Components.showToast(e.toString(), clr: Colors.red);
     });
   }
 
   // ===========  login page  ================
   //vars
-  ShowHidePass izPass = ShowHidePass();
+  ShowHidePass izPassLoginScr = ShowHidePass();
+  ShowHidePass izPassRegisterScr = ShowHidePass();
 
   void saveLastEmail(String email) {
     CacheHelper.setValue(key: PrefrKeys.lastEmail, value: email);
@@ -93,16 +99,68 @@ class LoginCubit extends Cubit<LoginStates> {
       LoginModel model = LoginModel.fromJson(value!.data);
       CacheHelper.setValue(key: PrefrKeys.token, value: model.data!.token);
       cubit.token = model.data!.token ?? '';
-      cubit.initDefult();
-      emit(LoginSuccessState(model));
+      Components.showToast(model.message ?? 'no');
+      cubit.initDefult().then((value) => emit(LoginSuccessState(model)));
     }).catchError((error) {
-      print(error.toString());
+      Components.showToast(error.toString());
       emit(LoginErrorState(error.toString()));
     });
   }
 
-  VoidCallback changePassShow() => () {
-        izPass.changeShow();
+  void registerNew(RegisterFields user, context, {bool openScr = true}) {
+    emit(LoginLoadingRegisterState());
+    var data = user.toData();
+    DioHelper.postData(EndPoint.register, data, token: '').then((value) {
+      RegisterRespModel model = RegisterRespModel.fromJson(value!.data);
+      if (model.status ?? false) {
+        CacheHelper.setValue(key: PrefrKeys.token, value: model.data!.token);
+        cubit.token = model.data!.token ?? '';
+        cubit.initDefult().then((value) {
+          emit(LoginSuccessRegisterState());
+          HelpMethods.openScrNoBack(context, HomeLayout());
+        });
+      } else {
+        Components.showToast(model.message ?? 'not Register');
+        emit(LoginFaildRegisterState());
+      }
+    }).catchError((error) {
+      Components.showToast(error.toString());
+      emit(LoginErrorRegisterState());
+    });
+  }
+
+  void updateUser(RegisterFields user) {
+    emit(LoginLoadingUpdateUserState());
+    var data = user.toData();
+    DioHelper.putData(EndPoint.update_profile, data, token: cubit.token)
+        .then((value) {
+      ProfileModel model = ProfileModel.fromJson(value!.data);
+      if (model.status ?? false) {
+        CacheHelper.setValue(
+            key: PrefrKeys.lastEmail, value: model.data!.email);
+        Components.showToast(model.message ?? 'ok');
+        cubit.getSittingsHttp().then((value) => {
+        emit(LoginSuccessUpdateUserState())
+        });
+      } else {
+        Components.showToast(model.message ?? 'not Updated');
+        emit(LoginFaildUpdateUserState());
+      }
+    }).catchError((error) {
+      Components.showToast(error.toString());
+      emit(LoginErrorUpdateUserState());
+    });
+  }
+
+  VoidCallback changePassLoginShow() =>
+          () {
+        izPassLoginScr.changeShow();
+        emit(LoginChangePassIcoState());
+      };
+
+  VoidCallback changePassRegisterShow() =>
+          () {
+        izPassRegisterScr.changeShow();
         emit(LoginChangePassIcoState());
       };
 }
